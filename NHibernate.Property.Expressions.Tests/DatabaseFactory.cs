@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data;
+using System.Data.SQLite;
 using System.Reflection;
-using Community.CsharpSqlite.SQLiteClient;
 using NHibernate.Cfg;
 using NHibernate.Dialect;
 using NHibernate.Driver;
@@ -14,7 +14,7 @@ namespace NHibernate.Property.Expressions.Tests
 {
     public class DatabaseFactory : IDisposable
     {
-        private SqliteConnection _connection;
+        private SQLiteConnection _connection;
         private ISessionFactory _sessionFactory;
         private Configuration _configuration;
 
@@ -22,7 +22,7 @@ namespace NHibernate.Property.Expressions.Tests
         {
             if (_connection == null)
             {
-                _connection = new SqliteConnection("uri=file://:memory:,Version=3");
+                _connection = new SQLiteConnection("Data Source=:memory:");
 
                 _connection.Open();
 
@@ -79,8 +79,8 @@ namespace NHibernate.Property.Expressions.Tests
             */
             cfg.DataBaseIntegration(c =>
             {
-                c.ConnectionString = @"uri=file://:memory:,Version=3";
-                c.Driver<CsharpSqliteDriver>();
+                c.ConnectionString = @"Data Source=:memory:";
+                c.Driver<SQLite20Driver>();
                 c.Dialect<SQLiteDialect>();
 
                 c.LogSqlInConsole = true;
