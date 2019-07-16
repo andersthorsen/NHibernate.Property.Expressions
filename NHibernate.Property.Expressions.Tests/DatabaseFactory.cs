@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Data.Common;
 using System.Data.SQLite;
 using System.Reflection;
 using NHibernate.Cfg;
@@ -18,7 +19,7 @@ namespace NHibernate.Property.Expressions.Tests
         private ISessionFactory _sessionFactory;
         private Configuration _configuration;
 
-        public IDbConnection GetConnection()
+        public DbConnection GetConnection()
         {
             if (_connection == null)
             {

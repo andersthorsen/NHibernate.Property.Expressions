@@ -1,6 +1,8 @@
-﻿using System.Linq.Expressions;
-using NHibernate.Engine;
+﻿using NHibernate.Engine;
 using NHibernate.Linq;
+using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NHibernate.Property.Expressions
 {
@@ -19,13 +21,31 @@ namespace NHibernate.Property.Expressions
             return base.Execute(exp);
         }
 
-        public override object ExecuteFuture(Expression expression)
+        public override IFutureEnumerable<TResult> ExecuteFuture<TResult>(Expression expression)
         {
             var visitor = new ReplacePropertyWithExpressionByConvention();
 
             var exp = visitor.Visit(expression);
 
-            return base.ExecuteFuture(exp);
+            return base.ExecuteFuture<TResult>(exp);
+        }
+
+        public override IFutureValue<TResult> ExecuteFutureValue<TResult>(Expression expression)
+        {
+            var visitor = new ReplacePropertyWithExpressionByConvention();
+
+            var exp = visitor.Visit(expression);
+
+            return base.ExecuteFutureValue<TResult>(exp);
+        }
+
+        public override Task<object> ExecuteAsync(Expression expression, CancellationToken cancellationToken)
+        {
+            var visitor = new ReplacePropertyWithExpressionByConvention();
+
+            var exp = visitor.Visit(expression);
+
+            return base.ExecuteAsync(exp, cancellationToken);
         }
     }
 }
