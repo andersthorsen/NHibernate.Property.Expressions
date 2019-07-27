@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Property.Expression", "NHibernate.Property.Expression.csproj", "{2B4A8DFC-6606-456B-B231-677E60D68B86}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Property.Expression", "NHibernate.Property.Expression\NHibernate.Property.Expression.csproj", "{2B4A8DFC-6606-456B-B231-677E60D68B86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Property.Expressions.Tests", "..\NHibernate.Property.Expressions.Tests\NHibernate.Property.Expressions.Tests.csproj", "{2668B590-327B-428D-B983-1A28143B2690}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NHibernate.Property.Expressions.Tests", "NHibernate.Property.Expressions.Tests\NHibernate.Property.Expressions.Tests.csproj", "{2668B590-327B-428D-B983-1A28143B2690}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,87 +1,38 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{2668B590-327B-428D-B983-1A28143B2690}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NHibernate.Property.Expressions.Tests</RootNamespace>
-    <AssemblyName>NHibernate.Property.Expressions.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
+    <Version>1.1.0</Version>
+    <IsPackable>false</IsPackable>
+    <NoWarn>$(NoWarn);NU1605</NoWarn>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">
+    <DefineConstants>$(DefineConstants);_NETSTANDARD_;_NETSTANDARD2_0_</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'net461' ">
+    <DefineConstants>$(DefineConstants);_NETFRAMEWORK_;_NET461_</DefineConstants>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Community.CsharpSqlite">
-      <HintPath>..\NHibernate.Property.Expression\packages\Community.CsharpSqlite.SQLiteClient.3.7.7.3\lib\net45\Community.CsharpSqlite.dll</HintPath>
-    </Reference>
-    <Reference Include="Community.CsharpSqlite.SQLiteClient">
-      <HintPath>..\NHibernate.Property.Expression\packages\Community.CsharpSqlite.SQLiteClient.3.7.7.3\lib\net45\Community.CsharpSqlite.SQLiteClient.dll</HintPath>
-    </Reference>
-    <Reference Include="FluentAssertions">
-      <HintPath>..\NHibernate.Property.Expression\packages\FluentAssertions.3.3.0\lib\net45\FluentAssertions.dll</HintPath>
-    </Reference>
-    <Reference Include="FluentAssertions.Core">
-      <HintPath>..\NHibernate.Property.Expression\packages\FluentAssertions.3.3.0\lib\net45\FluentAssertions.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Iesi.Collections">
-      <HintPath>..\NHibernate.Property.Expression\packages\Iesi.Collections.4.0.0.4000\lib\net40\Iesi.Collections.dll</HintPath>
-    </Reference>
-    <Reference Include="NHibernate">
-      <HintPath>..\NHibernate.Property.Expression\packages\NHibernate.4.0.3.4000\lib\net40\NHibernate.dll</HintPath>
-    </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\NHibernate.Property.Expression\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'netcoreapp2.0' ">
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="DatabaseFactory.cs" />
-    <Compile Include="ExpressionResolverRegistryFixture.cs" />
-    <Compile Include="Person.cs" />
-    <Compile Include="PersonMap.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <PackageReference Include="FluentAssertions" Version="5.7.0" />
+    <PackageReference Include="NHibernate" Version="5.1.0" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.111" />
   </ItemGroup>
+  
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\NHibernate.Property.Expression\NHibernate.Property.Expression.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NHibernate.Property.Expression\NHibernate.Property.Expression.csproj">
-      <Project>{2B4A8DFC-6606-456B-B231-677E60D68B86}</Project>
-      <Name>NHibernate.Property.Expression</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  
 </Project>
