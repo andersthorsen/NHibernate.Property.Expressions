@@ -21,7 +21,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\NHibernate.Property.Expression\NHibernate.Property.Expression.csproj" />
+    <ProjectReference Include="..\NHibernate.Property.Expressions\NHibernate.Property.Expressions.csproj" />
   </ItemGroup>
   
 </Project>

@@ -1,4 +1,4 @@
-# NHibernate.Property.Expression
+# NHibernate.Property.Expressions
 A convention based expression resolver for NHibernate. If a &lt;PropertyName>Expression exists it will be used for Linq queries.
 
 On your data object do this:
