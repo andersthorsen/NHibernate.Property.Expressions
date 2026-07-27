@@ -10,7 +10,7 @@
     <Company />
     <Product>NHibernate.Property.Expressions</Product>
     <Description>A convention based expression resolver for NHibernate. If a &lt;PropertyName&gt;Expression exists it will be used for Linq queries.</Description>
-    <PackageProjectUrl>https://github.com/andersthorsen/NHibernate.Property.Expression</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/andersthorsen/NHibernate.Property.Expressions</PackageProjectUrl>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>$(NoWarn);NU1605;CS1591;CS0672;CS0618</NoWarn>

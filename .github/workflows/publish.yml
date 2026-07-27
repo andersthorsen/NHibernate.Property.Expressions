@@ -52,7 +52,7 @@ jobs:
         run: dotnet restore
       - name: Build
         run: >
-          dotnet build NHibernate.Property.Expression/NHibernate.Property.Expression.csproj
+          dotnet build NHibernate.Property.Expressions/NHibernate.Property.Expressions.csproj
           -c Release --no-restore
           -p:Version=${{ steps.version.outputs.version }}
           -p:GeneratePackageOnBuild=false
@@ -60,7 +60,7 @@ jobs:
         run: dotnet test --no-restore --verbosity normal
       - name: Pack
         run: >
-          dotnet pack NHibernate.Property.Expression/NHibernate.Property.Expression.csproj
+          dotnet pack NHibernate.Property.Expressions/NHibernate.Property.Expressions.csproj
           -c Release --no-build
           -p:Version=${{ steps.version.outputs.version }}
           -p:PackageVersion=${{ steps.version.outputs.version }}
