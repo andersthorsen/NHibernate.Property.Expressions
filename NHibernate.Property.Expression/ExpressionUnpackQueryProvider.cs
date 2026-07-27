@@ -1,5 +1,6 @@
 ﻿using NHibernate.Engine;
 using NHibernate.Linq;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,40 +13,41 @@ namespace NHibernate.Property.Expressions
         {
         }
 
-        public override object Execute(Expression expression)
+        private static Expression Unpack(Expression expression)
         {
             var visitor = new ReplacePropertyWithExpressionByConvention();
 
-            var exp = visitor.Visit(expression);
+            return visitor.Visit(expression);
+        }
 
-            return base.Execute(exp);
+        public override object Execute(Expression expression)
+        {
+            return base.Execute(Unpack(expression));
+        }
+
+        public override IList<TResult> ExecuteList<TResult>(Expression expression)
+        {
+            return base.ExecuteList<TResult>(Unpack(expression));
+        }
+
+        public override Task<IList<TResult>> ExecuteListAsync<TResult>(Expression expression, CancellationToken cancellationToken)
+        {
+            return base.ExecuteListAsync<TResult>(Unpack(expression), cancellationToken);
         }
 
         public override IFutureEnumerable<TResult> ExecuteFuture<TResult>(Expression expression)
         {
-            var visitor = new ReplacePropertyWithExpressionByConvention();
-
-            var exp = visitor.Visit(expression);
-
-            return base.ExecuteFuture<TResult>(exp);
+            return base.ExecuteFuture<TResult>(Unpack(expression));
         }
 
         public override IFutureValue<TResult> ExecuteFutureValue<TResult>(Expression expression)
         {
-            var visitor = new ReplacePropertyWithExpressionByConvention();
-
-            var exp = visitor.Visit(expression);
-
-            return base.ExecuteFutureValue<TResult>(exp);
+            return base.ExecuteFutureValue<TResult>(Unpack(expression));
         }
 
         public override Task<object> ExecuteAsync(Expression expression, CancellationToken cancellationToken)
         {
-            var visitor = new ReplacePropertyWithExpressionByConvention();
-
-            var exp = visitor.Visit(expression);
-
-            return base.ExecuteAsync(exp, cancellationToken);
+            return base.ExecuteAsync(Unpack(expression), cancellationToken);
         }
     }
 }
