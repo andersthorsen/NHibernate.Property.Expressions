@@ -1,0 +1,129 @@
+# Publishes packages produced from this repo.
+#
+#  * Every push to master  -> alpha prerelease pushed to GitHub Packages (no approval).
+#  * Every push of a v* tag -> stable package pushed to NuGet.org, gated behind the
+#    "nuget-release" environment, which requires manual approval before the push runs.
+#
+# NuGet.org publishing uses Trusted Publishing (OIDC) - no long-lived API key is stored.
+# Configure a trusted publishing policy on nuget.org that points at:
+#     Repository owner : andersthorsen
+#     Repository       : NHibernate.Property.Expressions
+#     Workflow file     : publish.yml
+#     Environment       : nuget-release
+# and set the repository variable NUGET_USER to your nuget.org account name.
+name: Publish
+
+on:
+  push:
+    branches: [ "master" ]
+    tags: [ "v*.*.*" ]
+
+env:
+  # Base version used for alpha prereleases from master (bump when starting a new release line).
+  ALPHA_BASE_VERSION: "1.2.0"
+
+jobs:
+  pack:
+    # net461 is part of the package, so pack on Windows.
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      is_release: ${{ steps.version.outputs.is_release }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Determine version
+        id: version
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+            echo "is_release=true" >> "$GITHUB_OUTPUT"
+          else
+            VERSION="${ALPHA_BASE_VERSION}-alpha.${GITHUB_RUN_NUMBER}"
+            echo "is_release=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Publishing version $VERSION"
+      - name: Restore
+        run: dotnet restore
+      - name: Build
+        run: >
+          dotnet build NHibernate.Property.Expression/NHibernate.Property.Expression.csproj
+          -c Release --no-restore
+          -p:Version=${{ steps.version.outputs.version }}
+          -p:GeneratePackageOnBuild=false
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+      - name: Pack
+        run: >
+          dotnet pack NHibernate.Property.Expression/NHibernate.Property.Expression.csproj
+          -c Release --no-build
+          -p:Version=${{ steps.version.outputs.version }}
+          -p:PackageVersion=${{ steps.version.outputs.version }}
+          -o ${{ github.workspace }}/artifacts
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nupkg
+          path: artifacts/*.nupkg
+          if-no-files-found: error
+
+  # Alpha channel: automatic, no approval.
+  publish-github:
+    if: ${{ needs.pack.outputs.is_release == 'false' }}
+    needs: pack
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nupkg
+          path: artifacts
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Push to GitHub Packages
+        run: >
+          dotnet nuget push "artifacts/*.nupkg"
+          --api-key ${{ secrets.GITHUB_TOKEN }}
+          --source https://nuget.pkg.github.com/andersthorsen/index.json
+          --skip-duplicate
+
+  # Release channel: NuGet.org, gated by manual approval on the nuget-release environment.
+  publish-nuget:
+    if: ${{ needs.pack.outputs.is_release == 'true' }}
+    needs: pack
+    runs-on: ubuntu-latest
+    environment: nuget-release
+    permissions:
+      contents: read
+      id-token: write   # required for NuGet Trusted Publishing (OIDC)
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nupkg
+          path: artifacts
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: NuGet login (Trusted Publishing)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ vars.NUGET_USER }}
+      - name: Push to NuGet.org
+        run: >
+          dotnet nuget push "artifacts/*.nupkg"
+          --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
